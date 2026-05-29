@@ -43,7 +43,7 @@
 
 #define BASE_SPEED             120 //150
 #define MAX_SPEED              255  //255
-#define MIN_SPEED             -255 //-255
+#define MIN_SPEED              0 //-255
 
 #define CURVE_FACTOR           0.055f //0.060  0.055
 

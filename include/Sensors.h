@@ -12,7 +12,7 @@ public:
 
     void begin();
 
-    void calibrate();
+    bool calibrate();
 
     uint16_t readLine();
 

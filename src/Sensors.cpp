@@ -24,14 +24,97 @@ void Sensors::begin()
     );
 }
 
-void Sensors::calibrate()
+bool Sensors::calibrate()
 {
-    for(uint16_t i = 0; i < 400; i++)
+    pinMode(
+        LED_BUILTIN,
+        OUTPUT
+    );
+
+    // ------------------------------------------
+    // LED OFF
+    // ------------------------------------------
+
+    digitalWrite(
+        LED_BUILTIN,
+        LOW
+    );
+
+    // ------------------------------------------
+    // CALIBRACION
+    // ------------------------------------------
+
+    for(uint16_t i = 0; i < 450; i++)
     {
         qtr.calibrate();
 
-        delayMicroseconds(1500);
+        // --------------------------------------
+        // BLINK
+        // --------------------------------------
+
+        digitalWrite(
+            LED_BUILTIN,
+            !digitalRead(LED_BUILTIN)
+        );
+
+        delayMicroseconds(2500);
     }
+
+    // ------------------------------------------
+    // VERIFICAR CALIBRACION
+    // ------------------------------------------
+
+    bool calibrationOk = true;
+
+    for(uint8_t i = 0; i < 8; i++)
+    {
+        uint16_t range =
+            qtr.calibrationOn.maximum[i] -
+            qtr.calibrationOn.minimum[i];
+
+        if(range < 400)
+        {
+            calibrationOk = false;
+        }
+    }
+
+    // ------------------------------------------
+    // RESULTADO
+    // ------------------------------------------
+
+    if(calibrationOk)
+    {
+        // LED fijo ON
+
+        digitalWrite(
+            LED_BUILTIN,
+            HIGH
+        );
+    }
+    else
+    {
+        // ERROR
+
+        for(uint8_t i = 0; i < 10; i++)
+        {
+            digitalWrite(
+                LED_BUILTIN,
+                HIGH
+            );
+
+            delay(100);
+
+            digitalWrite(
+                LED_BUILTIN,
+                LOW
+            );
+
+            delay(100);
+        }
+    }
+
+    return calibrationOk;
+
 }
 
 uint16_t Sensors::readLine()

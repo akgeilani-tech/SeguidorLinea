@@ -17,9 +17,11 @@ private:
 
     float integral;
 
-    int derivative;
+    float derivative;
 
-    int lastError;
+    float derivativeFiltered;
+
+    float lastError;
 };
 
 #endif

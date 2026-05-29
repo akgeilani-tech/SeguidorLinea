@@ -7,11 +7,18 @@ Robot::Robot()
 
 void Robot::begin()
 {
-    delay(1000);
+    delay(500);
 
     sensors.begin();
 
     sensors.calibrate();
+    if(!sensors.calibrate())
+    {
+        while(true)
+        {
+            // ERROR
+        }
+    }
 
     motors.begin();
 }
@@ -23,9 +30,13 @@ void Robot::update()
 
     int error =
         LINE_CENTER - position; 
+    if(abs(error) < 20)
+    {
+        error = 0;
+    }
     
-    Serial.print("Position: ");
-    Serial.print(position);
+    // Serial.print("Position: ");
+    // Serial.print(position);
 
     float correction =
         pid.compute(error);
@@ -66,10 +77,10 @@ void Robot::update()
         rightSpeed
     );
     
-    // correction =
-    // constrain(
-    //     correction,
-    //     -180,
-    //     180
-    // );
+    correction =
+    constrain(
+        correction,
+        -200,
+        200
+    );
 }
