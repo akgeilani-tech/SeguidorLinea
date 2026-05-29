@@ -11,7 +11,8 @@ void Robot::begin()
 
     sensors.begin();
 
-    sensors.calibrate();
+    //sensors.calibrate();
+
     if(!sensors.calibrate())
     {
         while(true)
@@ -30,7 +31,7 @@ void Robot::update()
 
     int error =
         LINE_CENTER - position; 
-    if(abs(error) < 20)
+    if(abs(error) < 50) //20
     {
         error = 0;
     }
@@ -77,10 +78,10 @@ void Robot::update()
         rightSpeed
     );
     
-    correction =
-    constrain(
-        correction,
-        -200,
-        200
-    );
+    // correction =
+    // constrain(
+    //     correction,
+    //     -200,
+    //     200
+    // );
 }

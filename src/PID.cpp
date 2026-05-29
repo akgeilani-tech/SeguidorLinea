@@ -22,17 +22,18 @@ float PID::compute(
         );
 
     derivative = error - lastError;
-    
+
     derivativeFiltered =
         (derivativeFiltered * 0.7f) +
         (derivative * 0.3f);
 
     lastError = error;
-
-    return
-        (KP * error) +
-        (KI * integral) +
-        (KD * derivativeFiltered);
+    float output = (KP * error) + (KI * integral) + (KD * derivativeFiltered);
+    return constrain(output, -255.0f, 255.0f);
+    // return
+    //     (KP * error) +
+    //     (KI * integral) +
+    //     (KD * derivativeFiltered);
 }
 
 void PID::reset()
