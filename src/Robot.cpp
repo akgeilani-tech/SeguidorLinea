@@ -5,23 +5,33 @@ Robot::Robot()
 {
 }
 
+void Robot::rotateMotors(int leftSpeed, int rightSpeed)
+{
+    motors.setSpeed(leftSpeed, rightSpeed);
+}
+
 void Robot::begin()
 {
     delay(500);
 
     sensors.begin();
 
-    //sensors.calibrate();
-
-    if(!sensors.calibrate())
-    {
-        while(true)
-        {
-            // ERROR
-        }
-    }
-
     motors.begin();
+}
+
+void Robot::autoCalibrate()
+{
+    // ======================================
+    // AUTOCALIBRACIÓN AUTOMÁTICA
+    // ======================================
+
+    // Pasar función lambda como callback
+    sensors.autoCalibrateRotation(
+        [this](int left, int right)
+        {
+            this->rotateMotors(left, right);
+        }
+    );
 }
 
 void Robot::update()
@@ -31,13 +41,10 @@ void Robot::update()
 
     int error =
         LINE_CENTER - position; 
-    if(abs(error) < 50) //20
+    if(abs(error) < 50)
     {
         error = 0;
     }
-    
-    // Serial.print("Position: ");
-    // Serial.print(position);
 
     float correction =
         pid.compute(error);
@@ -77,11 +84,4 @@ void Robot::update()
         leftSpeed,
         rightSpeed
     );
-    
-    // correction =
-    // constrain(
-    //     correction,
-    //     -200,
-    //     200
-    // );
 }
