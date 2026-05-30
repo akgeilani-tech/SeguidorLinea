@@ -15,6 +15,8 @@ public:
 
     void update();
 
+    void autoCalibrate();
+
 private:
 
     Motor motors;
@@ -22,6 +24,8 @@ private:
     PID pid;
 
     Sensors sensors;
+
+    void rotateMotors(int leftSpeed, int rightSpeed);
 };
 
 #endif
