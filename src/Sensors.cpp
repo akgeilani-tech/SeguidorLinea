@@ -114,7 +114,7 @@ bool Sensors::calibrate()
     return calibrationOk;
 }
 
-bool Sensors::autoCalibrateRotation(void (*rotationCallback)(int, int))
+bool Sensors::autoCalibrateRotation(std::function<void(int, int)> rotationCallback)
 {
     pinMode(SENSOR_STATUS, OUTPUT);
     digitalWrite(SENSOR_STATUS, LOW);
