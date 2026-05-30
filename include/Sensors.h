@@ -14,6 +14,8 @@ public:
 
     bool calibrate();
 
+    bool autoCalibrateRotation(void (*rotationCallback)(int, int));
+
     uint16_t readLine();
 
 private:
