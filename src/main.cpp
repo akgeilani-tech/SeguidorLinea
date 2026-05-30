@@ -13,6 +13,12 @@ void setup()
     // setupFastPWM();
     // Serial.begin(9600);
     robot.begin();
+    
+    // ====================================
+    // AUTOCALIBRACIÓN AUTOMÁTICA
+    // ====================================
+    // Descomenta la siguiente línea para activar
+    // robot.autoCalibrate();
 }
 
 void loop()
@@ -22,7 +28,7 @@ void loop()
 
     if(now - lastLoop >= LOOP_TIME_US)
     {
-        lastLoop = now ; 
+        lastLoop = now;
 
         robot.update();
     }
