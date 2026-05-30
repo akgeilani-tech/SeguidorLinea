@@ -61,4 +61,12 @@
 
 #define LINE_CENTER            3500
 
+// ======================================================
+// AUTOCALIBRATION
+// ======================================================
+
+#define AUTOCALIB_ROTATION_SPEED   100   // Velocidad de rotación
+#define AUTOCALIB_ROTATION_TIME_MS 3000  // 3 segundos por dirección
+#define AUTOCALIB_ITERATIONS       2     // 2 pasadas (derecha + izquierda)
+
 #endif
