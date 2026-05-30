@@ -43,16 +43,14 @@ bool Sensors::calibrate()
     );
 
     // ------------------------------------------
-    // CALIBRACION
+    // CALIBRACION MANUAL
     // ------------------------------------------
 
     for(uint16_t i = 0; i < 450; i++)
     {
         qtr.calibrate();
 
-        // --------------------------------------
         // BLINK
-        // --------------------------------------
 
         digitalWrite(
             SENSOR_STATUS,
@@ -86,7 +84,6 @@ bool Sensors::calibrate()
     if(calibrationOk)
     {
         // LED fijo ON
-
         digitalWrite(
             SENSOR_STATUS,
             HIGH
@@ -94,7 +91,7 @@ bool Sensors::calibrate()
     }
     else
     {
-        // ERROR
+        // ERROR - Parpadeo rápido
 
         for(uint8_t i = 0; i < 10; i++)
         {
@@ -115,7 +112,135 @@ bool Sensors::calibrate()
     }
 
     return calibrationOk;
+}
 
+bool Sensors::autoCalibrateRotation(void (*rotationCallback)(int, int))
+{
+    pinMode(SENSOR_STATUS, OUTPUT);
+    digitalWrite(SENSOR_STATUS, LOW);
+
+    // ------------------------------------------
+    // AUTOCALIBRACIÓN CON ROTACIÓN
+    // ------------------------------------------
+
+    for(uint8_t iter = 0; iter < AUTOCALIB_ITERATIONS; iter++)
+    {
+        // ======================================
+        // GIRAR DERECHA (Left +, Right -)
+        // ======================================
+
+        uint32_t startTime = millis();
+
+        while(millis() - startTime < AUTOCALIB_ROTATION_TIME_MS)
+        {
+            qtr.calibrate();
+
+            // Parpadeo durante calibración
+            digitalWrite(
+                SENSOR_STATUS,
+                !digitalRead(SENSOR_STATUS)
+            );
+
+            // Llamar callback para rotar motores
+            rotationCallback(
+                AUTOCALIB_ROTATION_SPEED,
+                -AUTOCALIB_ROTATION_SPEED
+            );
+
+            delayMicroseconds(2500);
+        }
+
+        delay(500);
+
+        // ======================================
+        // GIRAR IZQUIERDA (Left -, Right +)
+        // ======================================
+
+        startTime = millis();
+
+        while(millis() - startTime < AUTOCALIB_ROTATION_TIME_MS)
+        {
+            qtr.calibrate();
+
+            // Parpadeo durante calibración
+            digitalWrite(
+                SENSOR_STATUS,
+                !digitalRead(SENSOR_STATUS)
+            );
+
+            // Llamar callback para rotar motores
+            rotationCallback(
+                -AUTOCALIB_ROTATION_SPEED,
+                AUTOCALIB_ROTATION_SPEED
+            );
+
+            delayMicroseconds(2500);
+        }
+
+        delay(500);
+    }
+
+    // ------------------------------------------
+    // DETENER MOTORES
+    // ------------------------------------------
+
+    rotationCallback(0, 0);
+
+    delay(500);
+
+    // ------------------------------------------
+    // VERIFICAR CALIBRACION
+    // ------------------------------------------
+
+    bool calibrationOk = true;
+
+    for(uint8_t i = 0; i < 8; i++)
+    {
+        uint16_t range =
+            qtr.calibrationOn.maximum[i] -
+            qtr.calibrationOn.minimum[i];
+
+        if(range < 400)
+        {
+            calibrationOk = false;
+        }
+    }
+
+    // ------------------------------------------
+    // RESULTADO
+    // ------------------------------------------
+
+    if(calibrationOk)
+    {
+        // LED fijo ON
+        digitalWrite(
+            SENSOR_STATUS,
+            HIGH
+        );
+    }
+    else
+    {
+        // ERROR - Parpadeo rápido
+
+        for(uint8_t i = 0; i < 10; i++)
+        {
+            digitalWrite(
+                SENSOR_STATUS,
+                HIGH
+            );
+
+            delay(100);
+
+            digitalWrite(
+                SENSOR_STATUS,
+                LOW
+            );
+
+            delay(100);
+        }
+    }
+
+    return calibrationOk;
 }
 
 uint16_t Sensors::readLine()
