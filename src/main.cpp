@@ -22,7 +22,7 @@ void loop()
 
     if(now - lastLoop >= LOOP_TIME_US)
     {
-        lastLoop += now; // lastLoop = now; lastLoop = LOOP_TIME_US;
+        lastLoop = now; // lastLoop = now; lastLoop = LOOP_TIME_US;
 
         robot.update();
     }

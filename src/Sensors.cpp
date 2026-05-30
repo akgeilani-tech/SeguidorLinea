@@ -1,4 +1,5 @@
 #include "Sensors.h"
+#include "Config.h"
 
 Sensors::Sensors()
 {
@@ -7,7 +8,8 @@ Sensors::Sensors()
 void Sensors::begin()
 {
     qtr.setTypeAnalog();
-
+    pinMode(SENSOR_Enable, OUTPUT);
+    digitalWrite(SENSOR_Enable, HIGH);
     qtr.setSensorPins(
         (const uint8_t[])
         {
@@ -27,7 +29,7 @@ void Sensors::begin()
 bool Sensors::calibrate()
 {
     pinMode(
-        LED_BUILTIN,
+        SENSOR_STATUS,
         OUTPUT
     );
 
@@ -36,7 +38,7 @@ bool Sensors::calibrate()
     // ------------------------------------------
 
     digitalWrite(
-        LED_BUILTIN,
+        SENSOR_STATUS,
         LOW
     );
 
@@ -53,9 +55,8 @@ bool Sensors::calibrate()
         // --------------------------------------
 
         digitalWrite(
-            LED_BUILTIN,
-            !digitalRead(LED_BUILTIN)
-        );
+            SENSOR_STATUS,
+            !digitalRead(SENSOR_STATUS));
 
         delayMicroseconds(2500);
     }
@@ -87,7 +88,7 @@ bool Sensors::calibrate()
         // LED fijo ON
 
         digitalWrite(
-            LED_BUILTIN,
+            SENSOR_STATUS,
             HIGH
         );
     }
@@ -98,14 +99,14 @@ bool Sensors::calibrate()
         for(uint8_t i = 0; i < 10; i++)
         {
             digitalWrite(
-                LED_BUILTIN,
+                SENSOR_STATUS,
                 HIGH
             );
 
             delay(100);
 
             digitalWrite(
-                LED_BUILTIN,
+                SENSOR_STATUS,
                 LOW
             );
 
