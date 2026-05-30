@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <QTRSensors.h>
+#include <functional>
 
 class Sensors
 {
@@ -14,7 +15,7 @@ public:
 
     bool calibrate();
 
-    bool autoCalibrateRotation(void (*rotationCallback)(int, int));
+    bool autoCalibrateRotation(std::function<void(int, int)> rotationCallback);
 
     uint16_t readLine();
 
